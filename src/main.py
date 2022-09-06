@@ -26,11 +26,13 @@ def create_city(city: str = Query(description="Название города", d
 
 
 @app.post('/get-cities/', summary='Get Cities')
-def cities_list(q: str = Query(description="Название города", default=None)):
+def cities_list(q: dict = Query(description="Название города", default=None)):
     """
     Получение списка городов
     """
     cities = Session().query(City).all()
+    if q is not None:
+        cities = cities.filter(City.name == q)
 
     return [{'id': city.id, 'name': city.name, 'weather': city.weather} for city in cities]
 
